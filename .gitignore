@@ -1,0 +1,7 @@
+*.cfg
+*.pid
+*.db
+*.txt
+webserver_config.py
+logs
+__pycache__

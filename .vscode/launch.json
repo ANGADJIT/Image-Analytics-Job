@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${env:PYTHONPATH}:/home/angad/Desktop/image-analytics-job/dags",
+                "AIRFLOW_HOME": "home/angad/Desktop/Image-Analytics-Job/",
+                "AIRFLOW_CONFIG": "/home/angad/Desktop/Image-Analytics-Job/config/airflow.cfg",
+            }
+        }
+    ]
+}
