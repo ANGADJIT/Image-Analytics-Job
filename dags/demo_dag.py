@@ -1,7 +1,7 @@
 from airflow import DAG
 from datetime import datetime, timedelta
 from airflow.decorators import task
-from plugins import APIModelingOperator, User
+from plugins import APIModelingOperator, Users
 
 default_args = {
     'owner': 'airflow',
@@ -24,14 +24,16 @@ with DAG(
 
     @task
     def print_response(**kwargs):
-        print('HELLO RESPONSE..', kwargs['ti'].xcom_pull('demo_task'))
+        response = kwargs['ti'].xcom_pull('demo_task')
+
+        print('HELLO RESPONSE...',response)
 
     t1 = APIModelingOperator(
         method='GET',
-        url='https://randomuser.me/api/?results=1&nat=IN',
+        url='https://randomuser.me/api/?results=10&nat=IN',
         task_id='demo_task',
-        model=User)
+        model=Users)
 
     t1 >> print_response()
 
-dag.test()
+# dag.test()

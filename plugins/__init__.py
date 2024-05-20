@@ -1,2 +1,2 @@
-from models.user_model import User
-from operators.api_modeling_operator import APIModelingOperator
+from models import Users
+from operators import APIModelingOperator
