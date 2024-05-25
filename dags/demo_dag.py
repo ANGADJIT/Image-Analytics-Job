@@ -1,7 +1,10 @@
 from airflow import DAG
 from datetime import datetime, timedelta
 from airflow.decorators import task
-from plugins import APIModelingOperator, Users
+from plugins.operators.api_modeling_operator import APIModelingOperator
+from plugins.models.user_model import Users
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.models import Variable
 
 default_args = {
     'owner': 'airflow',
@@ -22,18 +25,34 @@ with DAG(
     catchup=False
 ) as dag:
 
-    @task
-    def print_response(**kwargs):
-        response = kwargs['ti'].xcom_pull('demo_task')
-
-        print('HELLO RESPONSE...',response)
-
-    t1 = APIModelingOperator(
+    api = APIModelingOperator(
         method='GET',
         url='https://randomuser.me/api/?results=10&nat=IN',
         task_id='demo_task',
         model=Users)
 
-    t1 >> print_response()
+    @task
+    def make_insert_query(users: dict):
+        columns: list[str] = None
 
-# dag.test()
+        for user in users:
+            if columns is None:
+                columns = list(user.keys())
+
+            values: str = ''.join([f'{t},' for t in list(user.values())])
+
+            return f"""INSER INTO {Variable.get('USER_TABLE_NAME')} {columns} VALUES({values})"""
+
+    api = APIModelingOperator(
+        task_id='fetch_users',
+        method='GET',
+        model=Users,
+        url='https://randomuser.me/api/?results=10&nat=IN'
+    )
+
+    sql = make_insert_query()
+
+    user_entry = PostgresOperator(postgres_conn_id=Variable.get('POSTGRES_DB'),
+                                  task_id='db_entry', sql='')
+
+    user_entry
