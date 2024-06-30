@@ -1,7 +1,5 @@
 from airflow.hooks.base import BaseHook
 from airflow.exceptions import AirflowNotFoundException
-from airflow.models import Variable
-from plugins.hooks.custom_postgres_hook import CustomPostgresHook
 import psycopg2
 
 

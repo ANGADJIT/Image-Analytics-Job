@@ -10,7 +10,7 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=30),
 }
 
 with DAG(
@@ -19,12 +19,13 @@ with DAG(
     description='''
         This dag will responsible for inserting random users into our Users Table
     ''',
-    schedule_interval=None,
+    schedule_interval=timedelta(minutes=5),
     start_date=datetime(2024, 1, 1),
     max_active_runs=1,
     catchup=False
 ) as dag:
 
+    @task
     def insert_users(**kwargs) -> None:
         users: list[dict] = kwargs['task_instance'].xcom_pull('fetch_users')
 
@@ -39,7 +40,7 @@ with DAG(
         task_id='fetch_users',
         method='GET',
         model=Users,
-        url='https://randomuser.me/api/?results=10&nat=IN'
+        url=f'https://randomuser.me/api/?results={Variable.get("RESULTS")}&nat={Variable.get("NAT")}'
     )
 
     # --------------- Insert User Job Flow ---------------
