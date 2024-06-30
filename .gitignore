@@ -5,3 +5,4 @@
 webserver_config.py
 logs
 __pycache__
+*.sh
