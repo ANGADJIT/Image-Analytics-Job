@@ -65,5 +65,27 @@ class CustomPostgresHook(BaseHook):
         else:
             raise Exception('Empty records or invalid record type')
 
+    def get_records_as_dict(self, fields: list[str], table_name: str) -> list[dict]:
+        # Make Select Query
+        SELECT_QUERY: str = f"SELECT {','.join(fields)} FROM {table_name}"
+
+        # Execute Query Here
+        self.__cursor.execute(SELECT_QUERY)
+
+        # Get columns names
+        columns: list[str] = [
+            column.name for column in self.__cursor.description]
+
+        # Map values with columns names and create dictionary
+        records: list[tuple] = self.__cursor.fetchall()
+        dict_records: list[dict] = []
+
+        for record in records:
+            # Map record and add to dict records
+            dict_record: dict = dict(zip(columns, record))
+            dict_records.append(dict_record)
+
+        return dict_records
+
     def __del__(self):
         self.__conn.close()

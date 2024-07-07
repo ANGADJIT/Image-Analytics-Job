@@ -5,6 +5,8 @@ from plugins.operators.api_modeling_operator import APIModelingOperator
 from plugins.models.user_model import Users
 from airflow.models import Variable
 from plugins.hooks.custom_postgres_hook import CustomPostgresHook
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+
 
 default_args = {
     'owner': 'airflow',
@@ -43,6 +45,13 @@ with DAG(
         url=f'https://randomuser.me/api/?results={Variable.get("RESULTS")}&nat={Variable.get("NAT")}'
     )
 
+    # Trigger Emotion Extraction DAG After User Entry Dag
+    trigger_emotions_extraction_service = TriggerDagRunOperator(
+        task_id='trigger_emotions_extraction_service',
+        trigger_dag_id='USER_PROFILE_EMOTION_EXTRACTION',
+        wait_for_completion=False
+    )
+
     # --------------- Insert User Job Flow ---------------
 
-    api >> insert_users()
+    api >> insert_users() >> trigger_emotions_extraction_service
