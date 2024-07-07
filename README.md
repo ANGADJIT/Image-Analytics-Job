@@ -1,6 +1,7 @@
 # User Profile Image Emotion Extraction Data Batch Job
 
 ## Overview
+![job](https://github.com/ANGADJIT/Image-Analytics-Job/assets/67195682/fe361794-4f6f-4631-b6a4-4b5d181b3cc4)
 This project involves a batch job to perform analytics on user profile images to extract emotions, age, gender, and race attributes. The batch job is divided into two Airflow DAGs:
 
 1. **User Entry DAG**: This DAG fetches random user-generated data from the [Random User API](https://randomuser.me/api/), processes and models this data, and stores it in a database. The information stored includes:
@@ -20,8 +21,10 @@ This project involves a batch job to perform analytics on user profile images to
 - **Postgres** for databases
 - **Python** as the language used by Airflow
 
-## How to Set Up the Project
 
+
+## How to Set Up the Project
+![Screenshot from 2024-07-07 22-06-57](https://github.com/ANGADJIT/Image-Analytics-Job/assets/67195682/92187377-20d4-47ff-ba16-be1673429b99)
 1. **Clone the Project from GitHub**
    ```bash
    git clone <repository-url>
